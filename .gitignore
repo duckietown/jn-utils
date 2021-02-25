@@ -1,0 +1,4 @@
+*_ignore
+venv
+*.onnx
+*.zip
