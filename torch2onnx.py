@@ -95,4 +95,5 @@ if __name__ == "__main__":
     except:
         print("It seems like the conversion failed.")
         print("Consider changing the torch.device to cuda instead of cpu. Sometimes, the conversion only works on cpu, and vice-versa.")
+        # Source for the cpu vs cuda device thing: https://github.com/pytorch/vision/issues/1706
         print("Make sure that the input function is adequate for your model.")
