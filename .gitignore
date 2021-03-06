@@ -1,4 +1,5 @@
 *_ignore
 venv
 *.onnx
-*.zip
+*.zi
+dt-machine-learning-base-environment
