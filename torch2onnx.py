@@ -34,7 +34,7 @@ def convert(model, input, device, filename):
         input_names=['input'],
         output_names=['output'],
         #dynamic_axes={'input': {0: 'batch_size'},  # todo this might be the wrong thing for you, but this generally works in most cases
-        #              'output': {0: 'batch_size'}}
+        #          'output': {0: 'batch_size'}}
     )
     print("Export went fine.")
     print()
@@ -47,8 +47,9 @@ def convert(model, input, device, filename):
     print()
 
     print("Finally, let's ensure that the onnx model_ignore is able to do inference")
-    ort_session = ort.InferenceSession('model.onnx')
-    outputs = ort_session.run(None, {"input": input.numpy()})
+    ort_session = ort.InferenceSession(filename)
+    numpy_input = input.numpy()
+    outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: numpy_input})
     print("The inference was alright.")
     print()
     print("Now, please verify that the output shape and type makes sense:")

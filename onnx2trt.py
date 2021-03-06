@@ -29,8 +29,8 @@ def get_builder(ram_size, batch_size):
     # we have only one image in batch
     builder.max_batch_size =batch_size
 
-    if builder.platform_has_fast_int8:
-        builder.int8_mode = True
+    #if builder.platform_has_fast_int8: #what does int8 mode do? activating it for dummy test doesnt work
+    #    builder.int8_mode = True
     if builder.platform_has_fast_fp16:
         builder.fp16_mode = True
 
@@ -61,11 +61,14 @@ def onnx_to_trt(onnx_file, ram_size, batch_size, explicit_batch):
 
     engine = builder.build_cuda_engine(network)
 
+    print("Successfully buily engine")
+
     return engine
 
 def serialize_engine(engine, outputfile):
     with open(outputfile, "wb") as f:
         f.write(engine.serialize())
+    print("Successfully serialize & wrote engine")
 
 def simplify_onnx(onnx_file):
     # https://github.com/daquexian/onnx-simplifier
@@ -93,16 +96,17 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def main():
-    args = parse_args()
-    newname = args.onnxfile
+def main(onnxfile, ram, batch_size, explicit_batch, enginefile):
+    newname = onnxfile
     try:
-        trt_engine = onnx_to_trt(newname, args.ram, args.batch_size, args.explicit_batch)
+        trt_engine = onnx_to_trt(newname, ram, batch_size, explicit_batch)
     except:
-        newname = simplify_onnx(args.onnxfile)
-        trt_engine = onnx_to_trt(newname, args.ram, args.batch_size, args.explicit_batch)
-    serialize_engine(trt_engine, args.enginefile)
+        newname = simplify_onnx(onnxfile)
+        trt_engine = onnx_to_trt(newname, ram, batch_size, explicit_batch)
+    serialize_engine(trt_engine, enginefile)
+    return trt_engine
 
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args.onnxfile, args.ram, args.batch_size, args.explicit_batch, args.enginefile)
