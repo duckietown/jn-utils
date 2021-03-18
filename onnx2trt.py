@@ -5,7 +5,7 @@ import pycuda.autoinit
 import numpy as np
 import tensorrt as trt
 import onnx
-from onnxsim import simplify
+#from onnxsim import simplify
 import datetime
 import time
 
@@ -69,7 +69,7 @@ def serialize_engine(engine, outputfile):
     with open(outputfile, "wb") as f:
         f.write(engine.serialize())
     print("Successfully serialize & wrote engine")
-
+"""
 def simplify_onnx(onnx_file):
     # https://github.com/daquexian/onnx-simplifier
 
@@ -84,7 +84,7 @@ def simplify_onnx(onnx_file):
     time.sleep(1)
     onnx.save(model_simp, modelname)
     return modelname
-
+"""
 def parse_args():
     parser = argparse.ArgumentParser(description='Transfer onnx model to TensorRT.')
     parser.add_argument('onnxfile', type=str, help='onnx file path (input)')
@@ -101,8 +101,9 @@ def main(onnxfile, ram, batch_size, explicit_batch, enginefile):
     try:
         trt_engine = onnx_to_trt(newname, ram, batch_size, explicit_batch)
     except:
-        newname = simplify_onnx(onnxfile)
-        trt_engine = onnx_to_trt(newname, ram, batch_size, explicit_batch)
+        pass
+        #newname = simplify_onnx(onnxfile)
+        #trt_engine = onnx_to_trt(newname, ram, batch_size, explicit_batch)
     serialize_engine(trt_engine, enginefile)
     return trt_engine
 
